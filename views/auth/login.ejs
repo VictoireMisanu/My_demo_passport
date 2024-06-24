@@ -1,0 +1,24 @@
+<%- include('../partials/header', {title: title}) -%>
+<h1>Login Page</h1>
+<form method="post" action="/login/">
+    <div>
+        <div>
+            <label for="email">Email</label>
+        </div>
+        <div>
+            <input type="email" id="email" name="email" required value="francois@kadea.co">
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="password">Password</label>
+        </div>
+        <div>
+            <input type="password" id="password" name="password" required value="12345">
+        </div>
+    </div>
+    <div>
+        <button type="submit">Login</button>
+    </div>
+</form>
+<%- include('../partials/footer') -%>
