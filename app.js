@@ -1,8 +1,10 @@
 const express = require('express');
 const PORT = process.env.PORT || 3000;
-const passport = require("passport")
-const LocalStategy = require("passport-local")
-const users = require("./db/users.json")
+const passport = require("passport");
+const LocalStategy = require("passport-local");
+const session = require("express-session")
+const SQLiteStore = require("connect-sqlite3")(session);
+const users = require("./db/users.json");
 
 const app = express();
 
@@ -11,6 +13,15 @@ app.use(express.json())
 app.set('views', __dirname + '/views')
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({extended: false}));
+
+app.use(session({
+    secret: "kadea academy",
+    resave: false, 
+    saveUninitialized: false,
+    store: new SQLiteStore({db: "sessions.db", dir: "./var/db"})
+}))
+
+app.use(passport.authenticate("session"))
 
 
 
@@ -55,6 +66,19 @@ passport.use(localStategy)
 
 
 
+passport.serializeUser(function(user, cb) {
+    process.nextTick(function() {
+      cb(null, { id: user.id, name: user.name, email: user.email });
+    });
+});
+  
+passport.deserializeUser(function(user, cb) {
+    process.nextTick(function() {
+        return cb(null, user);
+    });
+});
+
+
 app.get('/', (req, res) => {
     res.render('index', {title: "Home Page", user: req.user});
 })
@@ -73,8 +97,13 @@ app.get('/auth/signup', (req, res) => {
 })
 
 
-app.post("/auth/logout", (req, res) => {
-    res.redirect('/');
+app.post("/auth/logout", (req, res, next) => {
+    req.logOut(function(err){
+        if(err){
+            return next(err)
+        }
+        res.redirect("/")
+    })
 })
 
 
@@ -85,7 +114,6 @@ app.get('/auth/profile', (req, res) => {
 
 app.post('/admin/users', (req, res) => {
     res.render('admin/users', {title: "Users", user: req.user});
-
 })
 
 
