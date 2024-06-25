@@ -1,9 +1,9 @@
 const express = require('express');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const passport = require("passport");
 const LocalStategy = require("passport-local");
 const session = require("express-session")
-const SQLiteStore = require("connect-sqlite3")(session);
+//const SQLiteStore = require("connect-sqlite3")(session);
 const bcrypt = require('bcrypt');
 const users = require("./db/users.json");
 
@@ -20,7 +20,7 @@ app.use(session({
     secret: "kadea academy",
     resave: false, 
     saveUninitialized: false,
-    store: new SQLiteStore({db: "sessions.db", dir: "./var/db"})
+    //store: new SQLiteStore({db: "sessions.db", dir: "./var/db"})
 }))
 
 app.use(passport.authenticate("session"))
