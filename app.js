@@ -4,8 +4,6 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.locals.pluralize = require('pluralize');
-
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.set('views', __dirname + '/views')
