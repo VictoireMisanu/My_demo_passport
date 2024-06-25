@@ -35,7 +35,6 @@ function verify(email, password, cb){
     }
 
     bcrypt.compare(password, user.password, function(err, result) {
-        // result == true
         if (err) {
             return cb(err)
         }
@@ -87,7 +86,6 @@ passport.deserializeUser(function(user, cb) {
 
 
 app.get('/', (req, res) => {
-    console.log(users);
     res.render('index', {title: "Home Page", user: req.user});
 })
 
@@ -112,10 +110,7 @@ app.post("/auth/signup", async(req, res) => {
         password: hashedPassword,
         name: req.body.name,
     }
-
-  
     users.push(user);
-    console.log(users)
     res.redirect('/auth/login');
 })
 
