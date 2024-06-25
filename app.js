@@ -68,7 +68,7 @@ passport.use(localStategy)
 
 passport.serializeUser(function(user, cb) {
     process.nextTick(function() {
-      cb(null, { id: user.id, name: user.name, email: user.email });
+      cb(null, { id: user.id, email: user.email });
     });
 });
   
@@ -94,6 +94,18 @@ app.post("/auth/login", authenticate)
 
 app.get('/auth/signup', (req, res) => {
     res.render('auth/signup', {title: "Register Page", user: req.user});
+})
+
+app.post("/auth/signup", (req, res) => {
+    const user = {
+        id: crypto.randomUUID,
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+    }
+
+    users.push(user);
+    res.redirect('/auth/login');
 })
 
 
