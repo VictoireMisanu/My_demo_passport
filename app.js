@@ -4,9 +4,11 @@ const passport = require("passport");
 const LocalStategy = require("passport-local");
 const session = require("express-session")
 const SQLiteStore = require("connect-sqlite3")(session);
+const bcrypt = require('bcrypt');
 const users = require("./db/users.json");
 
 const app = express();
+const saltRounds = 10;
 
 app.set('view engine', 'ejs');
 app.use(express.json())
@@ -32,11 +34,16 @@ function verify(email, password, cb){
         return cb(null, false, {message: "Incorrect email or password"})
     }
 
-    if (user.password !== password) {
-        return cb(null, false, {message: "Incorrect email or password"})
-    }
-
-    return cb(null, user)
+    bcrypt.compare(password, user.password, function(err, result) {
+        // result == true
+        if (err) {
+            return cb(err)
+        }
+        if (result) {
+            return cb(null, user)
+        } 
+        return cb(null, false, {message: "Incorrect email"})
+    }); 
 }
 
 function authenticate(req, res, next) {
@@ -80,6 +87,7 @@ passport.deserializeUser(function(user, cb) {
 
 
 app.get('/', (req, res) => {
+    console.log(users);
     res.render('index', {title: "Home Page", user: req.user});
 })
 
@@ -96,15 +104,18 @@ app.get('/auth/signup', (req, res) => {
     res.render('auth/signup', {title: "Register Page", user: req.user});
 })
 
-app.post("/auth/signup", (req, res) => {
+app.post("/auth/signup", async(req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds)
     const user = {
         id: crypto.randomUUID,
         email: req.body.email,
-        password: req.body.password,
+        password: hashedPassword,
         name: req.body.name,
     }
 
+  
     users.push(user);
+    console.log(users)
     res.redirect('/auth/login');
 })
 
