@@ -1,6 +1,8 @@
 const express = require('express');
 const PORT = process.env.PORT || 3000;
-
+const passport = require("passport")
+const LocalStategy = require("passport-local")
+const users = require("./db/users.json")
 
 const app = express();
 
@@ -11,6 +13,48 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({extended: false}));
 
 
+
+function verify(email, password, cb){
+    const user = users.find(user => user.email === email);
+
+    if(!user){
+        return cb(null, false, {message: "Incorrect email or password"})
+    }
+
+    if (user.password !== password) {
+        return cb(null, false, {message: "Incorrect email or password"})
+    }
+
+    return cb(null, user)
+}
+
+function authenticate(req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(400).json({error: info.message});
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/auth/profile');
+        });
+    })(req, res, next);
+}
+
+const localStategy = new LocalStategy({
+    usernameField: "email", 
+    passwordField: "password"
+}, verify)
+
+
+passport.use(localStategy)
+
+
+
 app.get('/', (req, res) => {
     res.render('index', {title: "Home Page", user: req.user});
 })
@@ -19,6 +63,8 @@ app.get('/', (req, res) => {
 app.get('/auth/login', (req, res) => {
     res.render('auth/login', {title: "Login Page", user: req.user});
 })
+
+app.post("/auth/login", authenticate)
 
 
 
