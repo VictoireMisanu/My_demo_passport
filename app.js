@@ -62,6 +62,14 @@ function authenticate(req, res, next) {
     })(req, res, next);
 }
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/auth/login');
+}
+
 const localStategy = new LocalStategy({
     usernameField: "email", 
     passwordField: "password"
@@ -91,6 +99,9 @@ app.get('/', (req, res) => {
 
 
 app.get('/auth/login', (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect("/auth/profile");
+    }
     res.render('auth/login', {title: "Login Page", user: req.user});
 })
 
@@ -115,7 +126,7 @@ app.post("/auth/signup", async(req, res) => {
 })
 
 
-app.post("/auth/logout", (req, res, next) => {
+app.post("/auth/logout", ensureAuthenticated, (req, res, next) => {
     req.logOut(function(err){
         if(err){
             return next(err)
@@ -125,12 +136,12 @@ app.post("/auth/logout", (req, res, next) => {
 })
 
 
-app.get('/auth/profile', (req, res) => {
+app.get('/auth/profile', ensureAuthenticated, (req, res) => {
     res.render('auth/profile', {title: "Profile", user: req.user});
 })
 
 
-app.post('/admin/users', (req, res) => {
+app.post('/admin/users', ensureAuthenticated,  (req, res) => {
     res.render('admin/users', {title: "Users", user: req.user});
 })
 
