@@ -1,7 +1,14 @@
 [
   {
-    "id": 1,
+    "id": "1",
     "email": "francois@kadea.co",
-    "password": "$2b$10$Gow7sqL4YcTfx0GHRMUQduxRpjQLp7Jk/NRWb5oLDIyXjWhS6O1Ai"
+    "password": "$2b$10$Gow7sqL4YcTfx0GHRMUQduxRpjQLp7Jk/NRWb5oLDIyXjWhS6O1Ai",
+    "role": "admin"
+  }, 
+  {
+    "id": "2",
+    "email": "christian@kadea.co",
+    "password": "$2b$10$Gow7sqL4YcTfx0GHRMUQduxRpjQLp7Jk/NRWb5oLDIyXjWhS6O1Ai",
+    "role": "member"
   }
 ]

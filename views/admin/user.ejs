@@ -1,0 +1,37 @@
+<%- include('../partials/header', {title: `Modifier ${targetUser.email}`}) -%>
+    <br/>
+    <br/>
+    
+    <form method="POST" action="/admin/users/<%=targetUser.id%>/delete">
+        <label for="delete" style="color: red;">Supprimer</label>
+        <input type="submit" name="delete" id="delete" value="delete" hidden>
+    </form>
+    <br/>
+    <br/>
+    <form method="POST" action="/admin/users/<%=targetUser.id%>/edit">
+        <div>
+            <div>
+                <label for="email">Email</label>
+            </div>
+            <div>
+                <input type="email" name="email" id="email" value="<%=targetUser.email%>">
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="role">Role</label>
+            </div>
+            <div>
+                <select name="role" id="role">
+                    <option disabled>Choisissez un role</option>
+                    <option value="member" <%=targetUser.role === "member" && "selected"%>>Membre</option>
+                    <option value="admin" <%=targetUser.role === "admin" && "selected"%>>Admin</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit">Modifier</button>
+            </div>
+        </div>
+        
+    </form>
+<%- include('../partials/footer') -%>
