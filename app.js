@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 3001;
 const passport = require("passport");
 const LocalStategy = require("passport-local");
 const session = require("express-session")
-//const SQLiteStore = require("connect-sqlite3")(session);
+const SQLiteStore = require("connect-sqlite3")(session);
 const bcrypt = require('bcrypt');
 const users = require("./db/users.json");
 
