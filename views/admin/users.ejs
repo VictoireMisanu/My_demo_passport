@@ -1,4 +1,9 @@
 <%- include('../partials/header', {title: title}) -%>
-<h1><%- title %></h1>
-<h2>Welcome <%- user.name%></h2>
+    <h1><%- title %></h1>
+    <ul>
+        <%for (let user of users){%> 
+            <li><a href="/auth/admin/users/<%=user.id%>"><%= user.email %></a></li>
+        <%}%>
+    </ul>
+   
 <%- include('../partials/footer') -%>
